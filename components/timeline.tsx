@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface TimelineEvent {
@@ -96,6 +96,18 @@ const timelineData: TimelineEvent[] = [
 
 export default function Timeline() {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const nextEvent = () => {
     setCurrentIndex((prev) => (prev + 1) % timelineData.length)
@@ -117,8 +129,8 @@ export default function Timeline() {
   const visibleEvents = getVisibleEvents()
 
   return (
-    <div className="relative max-w-7xl mx-auto bg-white py-12 font-sans">
-      <div className="absolute left-12 z-10 flex gap-0 ml-[-20px] " style={{ top: "calc(50% - 45px)" }}>
+    <div className="relative max-w-7xl mx-auto bg-white py-12 font-sans px-4 md:px-0">
+      <div className="absolute left-12 z-10 flex gap-0 ml-[-20px] hidden md:flex" style={{ top: "calc(50% - 45px)" }}>
         <button
           onClick={prevEvent}
           className="w-12 h-12 bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors"
@@ -133,48 +145,86 @@ export default function Timeline() {
         </button>
       </div>
 
-      <div className="ml-36 overflow-hidden">
+      {/* Mobile Navigation */}
+      <div className="flex justify-center gap-4 mb-6 md:hidden">
+        <button
+          onClick={prevEvent}
+          className="w-10 h-10 bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors rounded"
+        >
+          <ChevronLeft className="h-4 w-4 text-white" />
+        </button>
+        <button
+          onClick={nextEvent}
+          className="w-10 h-10 bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors rounded"
+        >
+          <ChevronRight className="h-4 w-4 text-white" />
+        </button>
+      </div>
+
+      {/* Mobile Progress Dots */}
+      <div className="flex justify-center mb-6 md:hidden">
+        <div className="flex space-x-2">
+          {timelineData.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index === currentIndex ? 'bg-slate-800' : 'bg-slate-300'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="md:ml-36 ml-0 overflow-hidden">
         <div
           className="flex transition-transform duration-700 ease-out"
           style={{
-            transform: `translateX(-${currentIndex * 700}px)`,
-            width: `${timelineData.length * 700}px`,
+            transform: `translateX(-${currentIndex * (isMobile ? 100 : 700)}${isMobile ? '%' : 'px'})`,
+            width: isMobile ? '100%' : `${timelineData.length * 700}px`,
           }}
         >
           {timelineData.map((event, index) => (
             <div
               key={event.id}
-              className={`flex-shrink-0 relative transition-opacity duration-700 ease-out`}
+              className={`flex-shrink-0 relative transition-opacity duration-700 ease-out w-full md:w-[700px]`}
               style={{
-                width: "700px",
+                width: isMobile ? "100%" : "700px",
                 opacity: index === currentIndex ? 1 : index === currentIndex + 1 ? 0.5 : 0.2,
               }}
             >
-              <div className="relative">
-                <div className="mb-8 flex justify-start">
+              <div className="relative px-4 md:px-0">
+                <div className="mb-8 flex justify-start md:justify-start justify-center">
                   <img 
                     src={event.image || "/placeholder.svg"} 
                     alt={event.title} 
-                    className="w-38 h-38 object-cover" 
+                    className="w-32 h-32 md:w-38 md:h-38 object-cover" 
                   />
                 </div>
 
                 <div className="relative mb-8">
                   <div className="absolute top-2 left-0 w-full h-0.5 bg-slate-800"></div>
-                  <div className="absolute top-0 left-0 w-4 h-4 bg-slate-800"></div>
+                  <div className="absolute top-0 left-0 w-4 h-4 bg-slate-800 md:w-4 md:h-4 w-3 h-3 rounded-full md:rounded-none"></div>
                 </div>
 
-                <div className="pt-4">
-                  <div className="text-5xl font-bold text-slate-800 mb-4 leading-none font-serif">{event.year}</div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-4 leading-tight max-w-lg font-sans">
+                <div className="pt-4 text-center md:text-left">
+                  <div className="text-5xl font-bold text-slate-800 mb-4 leading-none font-serif md:text-5xl text-3xl">{event.year}</div>
+                  <h3 className="text-xl font-bold text-slate-800 mb-4 leading-tight max-w-lg font-sans md:text-xl text-lg">
                     {event.title}
                   </h3>
-                  <p className="text-gray-700 leading-relaxed max-w-lg text-base font-sans">{event.description}</p>
+                  <p className="text-gray-700 leading-relaxed max-w-lg text-base font-sans md:text-base text-sm">{event.description}</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Mobile Event Counter */}
+      <div className="mt-6 text-center md:hidden">
+        <span className="text-sm text-gray-500">
+          {currentIndex + 1} of {timelineData.length}
+        </span>
       </div>
     </div>
   )
