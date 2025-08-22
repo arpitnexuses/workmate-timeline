@@ -97,6 +97,7 @@ const timelineData: TimelineEvent[] = [
 export default function Timeline() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -109,12 +110,31 @@ export default function Timeline() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
+  // Auto-scroll effect
+  useEffect(() => {
+    if (isPaused) return
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % timelineData.length)
+    }, 5000) // 5 seconds
+
+    return () => clearInterval(interval)
+  }, [isPaused])
+
   const nextEvent = () => {
     setCurrentIndex((prev) => (prev + 1) % timelineData.length)
   }
 
   const prevEvent = () => {
     setCurrentIndex((prev) => (prev - 1 + timelineData.length) % timelineData.length)
+  }
+
+  const handleMouseEnter = () => {
+    setIsPaused(true)
+  }
+
+  const handleMouseLeave = () => {
+    setIsPaused(false)
   }
 
   const getVisibleEvents = () => {
@@ -129,17 +149,27 @@ export default function Timeline() {
   const visibleEvents = getVisibleEvents()
 
   return (
-    <div className="relative max-w-7xl mx-auto bg-white py-12 font-sans px-4 md:px-0">
-      <div className="absolute left-12 z-10 flex gap-0 ml-[-20px] hidden md:flex" style={{ top: "calc(50% - 45px)" }}>
+    <div 
+      className="relative max-w-7xl mx-auto bg-white py-12 font-sans px-4 md:px-0"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="absolute left-12 z-10 flex gap-0 ml-[-20px] hidden md:flex" style={{ top: "calc(40% - 33px)" }}>
         <button
           onClick={prevEvent}
-          className="w-12 h-12 bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors"
+          className="w-12 h-12 flex items-center justify-center transition-colors"
+          style={{ backgroundColor: '#4537F2' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3429D1'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4537F2'}
         >
           <ChevronLeft className="h-5 w-5 text-white" />
         </button>
         <button
           onClick={nextEvent}
-          className="w-12 h-12 bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors "
+          className="w-12 h-12 flex items-center justify-center transition-colors"
+          style={{ backgroundColor: '#4537F2' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3429D1'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4537F2'}
         >
           <ChevronRight className="h-5 w-5 text-white" />
         </button>
@@ -149,13 +179,19 @@ export default function Timeline() {
       <div className="flex justify-center gap-4 mb-6 md:hidden">
         <button
           onClick={prevEvent}
-          className="w-10 h-10 bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors rounded"
+          className="w-10 h-10 flex items-center justify-center transition-colors rounded"
+          style={{ backgroundColor: '#4537F2' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3429D1'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4537F2'}
         >
           <ChevronLeft className="h-4 w-4 text-white" />
         </button>
         <button
           onClick={nextEvent}
-          className="w-10 h-10 bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors rounded"
+          className="w-10 h-10 flex items-center justify-center transition-colors rounded"
+          style={{ backgroundColor: '#4537F2' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3429D1'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4537F2'}
         >
           <ChevronRight className="h-4 w-4 text-white" />
         </button>
@@ -168,9 +204,10 @@ export default function Timeline() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-slate-800' : 'bg-slate-300'
-              }`}
+              className="w-2 h-2 rounded-full transition-colors"
+              style={{ 
+                backgroundColor: index === currentIndex ? '#4537F2' : '#cbd5e1'
+              }}
             />
           ))}
         </div>
@@ -194,7 +231,7 @@ export default function Timeline() {
               }}
             >
               <div className="relative px-4 md:px-0">
-                <div className="mb-8 flex justify-start md:justify-start justify-center">
+                <div className="mb-8 flex justify-start">
                   <img 
                     src={event.image || "/placeholder.svg"} 
                     alt={event.title} 
@@ -202,14 +239,17 @@ export default function Timeline() {
                   />
                 </div>
 
-                <div className="relative mb-8">
-                  <div className="absolute top-2 left-0 w-full h-0.5 bg-slate-800"></div>
-                  <div className="absolute top-0 left-0 w-4 h-4 bg-slate-800 md:w-4 md:h-4 w-3 h-3 rounded-full md:rounded-none"></div>
+                <div className="mb-4 text-left">
+                  <div className="font-bold mb-4 leading-none font-serif" style={{ color: '#4537F2', fontSize: '40px' }}>{event.year}</div>
                 </div>
 
-                <div className="pt-4 text-center md:text-left">
-                  <div className="text-5xl font-bold text-slate-800 mb-4 leading-none font-serif md:text-5xl text-3xl">{event.year}</div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-4 leading-tight max-w-lg font-sans md:text-xl text-lg">
+                <div className="relative mb-8">
+                  <div className="absolute top-2 left-0 w-full h-0.5" style={{ backgroundColor: '#4537F2' }}></div>
+                  <div className="absolute top-0 left-0 w-4 h-4 md:w-4 md:h-4 w-3 h-3 rounded-full md:rounded-none" style={{ backgroundColor: '#4537F2' }}></div>
+                </div>
+
+                <div className="pt-4 text-left">
+                  <h3 className="text-xl font-bold mb-4 leading-tight max-w-lg font-sans md:text-xl text-lg" style={{ color: '#000000' }}>
                     {event.title}
                   </h3>
                   <p className="text-gray-700 leading-relaxed max-w-lg text-base font-sans md:text-base text-sm">{event.description}</p>
@@ -225,6 +265,24 @@ export default function Timeline() {
         <span className="text-sm text-gray-500">
           {currentIndex + 1} of {timelineData.length}
         </span>
+      </div>
+
+      {/* Global Presence Footer Section */}
+      <div className="mt-12 md:mt-16 mx-4 md:mx-0">
+        <div 
+          className="bg-white p-6 md:p-8 text-left"
+          style={{ 
+            border: `2px dotted #4537F2`,
+            borderRadius: '8px'
+          }}
+        >
+          <h2 className="font-bold mb-4 leading-none font-serif text-black" style={{ color: '#4537F2', fontSize: '36px' }}>
+            Building Global Presence
+          </h2>
+          <p className="leading-tight max-w-4xl font-sans text-black" style={{ fontSize: '18px' }}>
+            With roots in India and expanding operations in Singapore, Workmates is building a global platform to support enterprises in their modernization journeys while planning further strategic expansion.
+          </p>
+        </div>
       </div>
     </div>
   )
