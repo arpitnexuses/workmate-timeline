@@ -9,6 +9,7 @@ interface TimelineEvent {
   title: string
   description: string
   image: string
+  customers?: string
 }
 
 const timelineData: TimelineEvent[] = [
@@ -51,6 +52,7 @@ const timelineData: TimelineEvent[] = [
     description:
       "Recognized as AWS Managed Category Partner in May 2020, expanding our managed services portfolio.",
     image: "https://22527425.fs1.hubspotusercontent-na2.net/hubfs/22527425/Workmate/Premier%20Service(4).png",
+    customers: "46",
   },
   {
     id: 6,
@@ -67,6 +69,7 @@ const timelineData: TimelineEvent[] = [
     description:
       "Became AWS SMBhav Partner and AWS EC2 for MS Windows Service Delivery Partner in January 2021, expanding our specialized service offerings.",
     image: "https://22527425.fs1.hubspotusercontent-na2.net/hubfs/22527425/Workmate/Premier%20Service(6).png",
+    customers: "115",
   },
   {
     id: 8,
@@ -92,6 +95,42 @@ const timelineData: TimelineEvent[] = [
       "Completed our comprehensive AWS partnership portfolio by becoming AWS WAF Service Partner in June 2021, offering complete security solutions.",
     image: "https://22527425.fs1.hubspotusercontent-na2.net/hubfs/22527425/Workmate/image%20591.png",
   },
+  {
+    id: 11,
+    year: "2022",
+    title: "Launched Managed Security, Application Development & Managed Database Services",
+    description:
+      "Launched Managed Security, App Development, and Database Services in July 2021, offering comprehensive enterprise solutions.",
+    image: "https://22527425.fs1.hubspotusercontent-na2.net/hubfs/22527425/Workmate/Premier%20Service(7).png",
+    customers: "171",
+  },
+  {
+    id: 12,
+    year: "2023",
+    title: "Accredited with AWS Migration Services Competency",
+    description:
+      "Accredited with AWS Migration Services Competency in 2023, demonstrating our expertise in AWS migration services.",
+    image: "https://22527425.fs1.hubspotusercontent-na2.net/hubfs/22527425/Workmate/Premier%20Service(8).png",
+    customers: "218",
+  },
+  {
+    id: 13,
+    year: "2024",
+    title: "Achieved AWS Premier Partner status Established subsidiary in Singapore for ASEAN expansion",
+    description:
+      "Achieved AWS Premier Partner status and established subsidiary in Singapore for ASEAN expansion, demonstrating our commitment to global expansion.",
+    image: "https://22527425.fs1.hubspotusercontent-na2.net/hubfs/22527425/Workmate/Premier%20Service(9).png",
+    customers: "271",
+  },
+  {
+    id: 14,
+    year: "2025",
+    title: "Workmates Core2Cloud Solutions Ltd.: Positioned for Growth and Global Expansion",
+    description:
+      "Transitioned into Workmates Core2Cloud Solutions Ltd. (Public Limited) Positioned for IPO with Premier Tier AWS Partner status and 7 AWS Competencies.",
+    image: "https://22527425.fs1.hubspotusercontent-na2.net/hubfs/22527425/Workmate/Premier%20Service(10).png",
+    customers: "368",
+  }
 ]
 
 export default function Timeline() {
@@ -154,7 +193,7 @@ export default function Timeline() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="absolute left-12 z-10 flex gap-0 ml-[-20px] hidden md:flex" style={{ top: "calc(40% - 33px)" }}>
+      <div className="absolute left-12 z-10 flex gap-0 ml-[-20px] hidden md:flex" style={{ top: "calc(40% - 60px)" }}>
         <button
           onClick={prevEvent}
           className="w-12 h-12 flex items-center justify-center transition-colors"
@@ -249,6 +288,11 @@ export default function Timeline() {
                 </div>
 
                 <div className="pt-4 text-left">
+                  {event.customers && (
+                    <div className="inline-block text-black px-3 py-1 rounded-lg mb-3 text-sm font-semibold" style={{ backgroundColor: '#FCBD19', border: '2px solid #4537F2' }}>
+                      {event.customers} customers
+                    </div>
+                  )}
                   <h3 className="text-xl font-bold mb-4 leading-tight max-w-lg font-sans md:text-xl text-lg" style={{ color: '#000000' }}>
                     {event.title}
                   </h3>
