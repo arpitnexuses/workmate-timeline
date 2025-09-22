@@ -293,25 +293,25 @@ export default function Timeline() {
       </div>
 
       {/* Mobile Event Counter */}
-      <div className="mt-6 text-center md:hidden">
+      <div className="mt-4 text-center md:hidden">
         <span className="text-sm text-gray-500">
           {currentIndex + 1} of {timelineData.length}
         </span>
       </div>
 
       {/* Global Presence Footer Section */}
-      <div className="mt-12 md:mt-16 mx-4 md:mx-0">
+      <div className="mt-4 md:mt-16 mx-2 md:mx-0">
         <div 
-          className="bg-white p-6 md:p-8 text-left"
+          className="bg-white p-4 md:p-8 text-left"
           style={{ 
             border: `2px dotted #4537F2`,
             borderRadius: '8px'
           }}
         >
-          <h2 className="font-bold mb-4 leading-none font-serif text-black" style={{ color: '#4537F2', fontSize: '36px' }}>
+          <h2 className="font-bold mb-3 md:mb-4 leading-tight font-serif text-black" style={{ color: '#4537F2', fontSize: 'clamp(24px, 5vw, 36px)' }}>
             Building Global Presence
           </h2>
-          <p className="leading-tight max-w-4xl font-sans text-black" style={{ fontSize: '18px' }}>
+          <p className="leading-relaxed max-w-4xl font-sans text-black" style={{ fontSize: 'clamp(14px, 3vw, 18px)' }}>
             With roots in India and expanding operations in Singapore, Workmates is building a global platform to support enterprises in their modernization journeys while planning further strategic expansion.
           </p>
         </div>
